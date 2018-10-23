@@ -1,0 +1,14 @@
+# create docker image from docker file
+# dockerfile is in the current directory
+docker build -t postgresql .
+
+# list docker images
+docker images
+
+# запускаем контейнер в демоне
+# пробрасываем папку с существующим(!) кластером в контейнер
+docker run -d -p 5433:5432 -v /var/lib/postgresql/9.6/:/var/lib/postgresql/data --name postgresql postgresql
+#docker run -it -p 5433:5432 -v /var/lib/postgresql/9.6/:/var/lib/postgresql/data --name postgresql postgresql bash
+
+docker ps
+#docker ps -aq
