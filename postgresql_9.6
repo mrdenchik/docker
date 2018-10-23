@@ -1,0 +1,21 @@
+#version 0.0.1
+FROM ubuntu:18.04
+MAINTAINER Denis Stognienko <trasherrr@mail.ru>
+RUN apt-get update ; \
+apt-get install -y wget gnupg2 || apt-get install -y gnupg ; \
+wget -O - http://repo.postgrespro.ru/keys/GPG-KEY-POSTGRESPRO | apt-key add - ; \
+echo deb http://1c.postgrespro.ru/archive/2018_06_09/deb bionic main > /etc/apt/sources.list.d/postgrespro-1c.list; \
+apt-get update -y; \
+if dpkg -s libpq5 2>/dev/null; then apt-get remove -y libpq5; fi; \
+echo deb http://1c.postgrespro.ru/archive/2018_06_09/deb bionic main > /etc/apt/sources.list.d/postgrespro-1c.list; \
+apt-get install -y libpq5=9.6.*.1C.bionic ;\
+apt-get install -y postgresql-pro-1c-9.6
+USER postgres
+#RUN echo "host all all 0.0.0.0/0 md5" >> /etc/postgresql/9.6/main/pg_hba.conf OR /var/lib/postgresql/data
+RUN /usr/lib/postgresql/9.6/bin/initdb -D /var/lib/postgresql/data
+
+#RUN ["/usr/lib/postgresql/9.6/bin/postgres", "-D", "/var/lib/postgresql/data"]
+#RUN /etc/init.d/postgresql start && psql --command "CREATE USER docker PASSWORD 'docker';" && createdb -O docker docker
+
+ENTRYPOINT ["/usr/lib/postgresql/9.6/bin/postgres", "-D", "/var/lib/postgresql/data"]
+
